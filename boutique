@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique Finder</title>
+    <style>
+       body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #f0f0f0;
+        padding: 1rem;
+        text-align: center;
+    }
+    main {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 1rem;
+    }
+    #boutique-list, #catalogue, #map, #contact-info {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    @media (min-width: 768px) {
+        #boutique-list, #catalogue {
+            width: 48%;
+        }
+        #map, #contact-info {
+            width: 100%;
+        }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TAPFUMA Boutique Finder</h1>
+    </header>
+    <main>
+        <div id="boutique-list"></div>
+        <div id="catalogue"></div>
+        <div id="map"></div>
+        <div id="contact-info"></div>
+    </main>
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap" async defer></script>
+    <script>
+       
+    // Simulated data (replace with real-time data in a full implementation)
+    const boutiques = [
+        { id: 1, name: "TAPFUMA BOUTIQUE DOMBOSHAVA", location: { lat: -17.9096567, lng: 31.1493188 } },
+        { id: 2, name: "TAPFUMA BOUTIQUE DZIVARASEKWA", location: { lat: -17.7968942, lng: 30.9353136 } },
+        { id: 2, name: "TAPFUMA BOUTIQUE FIFE AVENUE", location: { lat: -17.8972918, lng: 31.0525716 } },
+        { id: 2, name: "TAPFUMA BOUTIQUE BUDIRIRO", location: { lat: -17.8972918, lng: 30.9136673 } },
+        { id: 2, name: "TAPFUMA BOUTIQUE ZORORO", location: { lat: -17.8989868, lng: 30.9807759 } },
+        { id: 2, name: "TAPFUMA BOUTIQUE GLENVIEW", location: { lat: -17.8979352, lng: 30.9505965 } },
+    ];
+
+    const catalogues = {
+        1: [
+            { id: 101, name: "Summer Dress", price: 19.99 },
+            { id: 102, name: "Denim Jacket", price: 15.99 },
+            {id: 103, name: "Shoe Jordan 4", price: 19.99 },
+            {id: 104, name: "Shoe Jordan 1", price: 29.99 },
+            {id: 105, name: "Shoe Jordan 3", price: 40.99 },
+            {id: 106, name: "Summer Shorts", price: 12.99 },
+            {id: 107, name: "Summer Bikini", price: 4.99 },
+            {id: 108, name: "Summer Skirts", price: 12.99 },
+            {id: 109, name: "Summer Tops", price: 3.99 },
+        ],
+        2: [
+            { id: 201, name: "Leather Boots", price: 129.99 },
+            { id: 202, name: "Silk Scarf", price: 39.99 },
+            { id: 203, name: "Summer Dress", price: 19.99 },
+            { id: 204, name: "Denim Jacket", price: 15.99 },
+            {id: 205, name: "Shoe Jordan 4", price: 19.99 },
+            {id: 206, name: "Shoe Jordan 1", price: 29.99 },
+            {id: 207, name: "Shoe Jordan 3", price: 40.99 },
+            {id: 207, name: "Summer Shorts", price: 12.99 },
+            {id: 208, name: "Summer Bikini", price: 4.99 },
+            {id: 209, name: "Summer Skirts", price: 12.99 },
+            {id: 209, name: "Summer Tops", price: 3.99 },
+        ],
+    };
+
+    function displayBoutiques() {
+        const boutiqueList = document.getElementById('boutique-list');
+        boutiqueList.innerHTML = '<h2>Boutiques</h2>';
+        boutiques.forEach(boutique => {
+            const button = document.createElement('button');
+            button.textContent = boutique.name;
+            button.onclick = () => showCatalogue(boutique.id);
+            boutiqueList.appendChild(button);
+        });
+    }
+
+    function showCatalogue(boutiqueId) {
+        const catalogueDiv = document.getElementById('catalogue');
+        catalogueDiv.innerHTML = '<h2>Catalogue</h2>';
+        catalogues[boutiqueId].forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.textContent = `${item.name} - $${item.price}`;
+            const selectButton = document.createElement('button');
+            selectButton.textContent = 'Select';
+            selectButton.onclick = () => selectItem(boutiqueId, item.id);
+            itemDiv.appendChild(selectButton);
+            catalogueDiv.appendChild(itemDiv);
+        });
+    }
+
+    function selectItem(boutiqueId, itemId) {
+        const boutique = boutiques.find(b => b.id === boutiqueId);
+        showMap(boutique.location);
+        showContactInfo(boutique);
+        notifySeller(boutique);
+    }
+
+    function showMap(location) {
+        const mapDiv = document.getElementById('map');
+        mapDiv.style.height = '600px';
+        const map = new google.maps.Map(mapDiv, {
+            center: location,
+            zoom: 15
+        });
+        new google.maps.Marker({
+            position: location,
+            map: map
+        });
+    }
+
+    function showContactInfo(boutique) {
+        const contactDiv = document.getElementById('contact-info');
+        contactDiv.innerHTML = `
+            <h2>Contact Information</h2>
+            <p>Boutique: ${boutique.name}</p>
+            <p>Phone: 50773991839</p>
+            <p>Email: contact@${boutique.name.toLowerCase().replace(' ', '')}.com</p>
+        `;
+    }
+
+    function notifySeller(boutique) {
+        // In a real application, this would send a notification to the seller
+        console.log(`Notifying seller of ${boutique.name}`);
+        alert(`The seller at ${boutique.name} has been notified and will contact you soon.`);
+    }
+
+    // Initialize the application
+    displayBoutiques();
+
+    </script>
+</body>
+</html>
